@@ -10,30 +10,28 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  test:
-    name: test-${{ matrix.os }}
-    runs-on: ${{ matrix.os }}-latest
+  test-windows:
+    name: test-windows
+    runs-on: windows-latest
 
     strategy:
       fail-fast: false
-      matrix:
-        include:
-          - os: ubuntu
-            target: x86_64-unknown-linux-gnu
-          # windows doesn't work at the moment
-          #- os: windows
-          #  target: x86_64-pc-windows-msvc
-          - os: macos
-            target: x86_64-apple-darwin
 
     steps:
     - uses: actions/checkout@v2
     - uses: actions-rs/toolchain@v1
       with:
         toolchain: stable
-        target: ${{ matrix.target }}
+        target: x86_64-pc-windows-msvc
         default: true
         override: true
+    - name: Install Clang
+      uses: KyleMayes/install-llvm-action@v1
+      with:
+        version: "3.9"
+        directory: ${{ runner.temp }}/llvm
+    - name: Set Clang environment variable
+      run: echo "LIBCLANG_PATH=$PATH" >> $GITHUB_ENV
     - uses: Swatinem/rust-cache@v1
     - uses: actions-rs/cargo@v1
       with:
