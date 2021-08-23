@@ -44,20 +44,10 @@ pub struct Cost(pub f32);
 ///
 /// # Note
 ///
-/// `-1` is reserved for representing the
-/// [`DefaultTerrain`](TerrainType::DefaultTerrain). As such, you should never
-/// create `TerrainType::Terrain(-1)`.
+/// `-1` is used to represent the
+/// [default terrain](TerrainType::DEFAULT).
 #[derive(Eq, Hash, PartialEq, Debug, Copy, Clone)]
-pub enum TerrainType {
-    /// A terrain represented by an integer.
-    ///
-    /// Should never contain `-1`.
-    Terrain(i32),
-    /// Default terrain.
-    ///
-    /// Represented by `-1` in Godot.
-    DefaultTerrain,
-}
+pub struct TerrainType(pub i32);
 
 /// Controls the direction of the dijkstra map in
 /// [`recalculate`](DijkstraMap::recalculate).
@@ -171,7 +161,7 @@ impl DijkstraMap {
     ///   Unspecified values are assumed to be [`INFINITY`](Weight::infinity)
     /// by default.
     ///
-    ///   [`DefaultTerrain`](TerrainType::DefaultTerrain) (`-1` in godot) has a
+    ///   [`DEFAULT`](TerrainType::DEFAULT) (`-1` in godot) has a
     /// weight of `1.0`.
     /// - `termination_points` : A set of points that stop the computation once
     /// they are reached.
@@ -242,7 +232,7 @@ impl DijkstraMap {
             let point1_cost = self.get_cost_at_point(point1);
             let point1_terrain = self.get_terrain_for_point(point1).unwrap();
             let weight_of_point1 = match point1_terrain {
-                TerrainType::DefaultTerrain => Weight(1.0), // terrain is default terrain => weight is 1.0
+                TerrainType::DEFAULT => Weight(1.0), // terrain is default terrain => weight is 1.0
                 x => *terrain_weights
                     .get(&x) // you have x in passed dict => it is the weigh used
                     .unwrap_or(&Weight::infinity()), // you dont have x => weight is infinity
@@ -306,15 +296,15 @@ mod tests {
         fn create_map(reverse_order: bool) -> DijkstraMap {
             let mut dijkstra_map = DijkstraMap::new();
             dijkstra_map
-                .add_point(PointId(0), TerrainType::DefaultTerrain)
+                .add_point(PointId(0), TerrainType::DEFAULT)
                 .unwrap();
             dijkstra_map
-                .add_point(PointId(3), TerrainType::DefaultTerrain)
+                .add_point(PointId(3), TerrainType::DEFAULT)
                 .unwrap();
             if reverse_order {
                 for i in (1..=2).rev() {
                     dijkstra_map
-                        .add_point(PointId(i), TerrainType::DefaultTerrain)
+                        .add_point(PointId(i), TerrainType::DEFAULT)
                         .unwrap();
                     dijkstra_map
                         .connect_points(PointId(0), PointId(i), None, None)
@@ -326,7 +316,7 @@ mod tests {
             } else {
                 for i in 1..=2 {
                     dijkstra_map
-                        .add_point(PointId(i), TerrainType::DefaultTerrain)
+                        .add_point(PointId(i), TerrainType::DEFAULT)
                         .unwrap();
                     dijkstra_map
                         .connect_points(PointId(3), PointId(i), None, None)

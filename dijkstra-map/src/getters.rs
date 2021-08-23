@@ -105,7 +105,7 @@ impl<'a> Iterator for ShortestPathIterator<'a> {
 #[cfg(test)]
 mod test {
     use super::*;
-    const TERRAIN: TerrainType = TerrainType::DefaultTerrain;
+    const TERRAIN: TerrainType = TerrainType::DEFAULT;
 
     #[test]
     fn available_id_works() {
@@ -118,7 +118,7 @@ mod test {
         for i in 0..100 {
             let id = d.get_available_id(None);
             assert_eq!(id, PointId(i));
-            d.add_point(id, TerrainType::DefaultTerrain).unwrap();
+            d.add_point(id, TerrainType::DEFAULT).unwrap();
         }
     }
 
@@ -159,7 +159,7 @@ mod test {
 
         let mut d = DijkstraMap::new();
         for i in 0..5 {
-            d.add_point(PointId(i), TerrainType::DefaultTerrain)
+            d.add_point(PointId(i), TerrainType::DEFAULT)
                 .unwrap();
         }
         for i in 0..4 {

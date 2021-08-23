@@ -40,7 +40,7 @@ mod test {
     const ID0: PointId = PointId(0);
     const ID1: PointId = PointId(1);
     const ID2: PointId = PointId(2);
-    const DEFAULT_TERRAIN: TerrainType = TerrainType::DefaultTerrain;
+    const DEFAULT_TERRAIN: TerrainType = TerrainType::DEFAULT;
 
     /// Create a new `DijkstraMap` with the connections :
     ///
@@ -156,18 +156,18 @@ mod test {
     #[test]
     fn terrain_behave_appropriatly() {
         let mut d = DijkstraMap::new();
-        d.add_point(ID0, TerrainType::Terrain(1))
+        d.add_point(ID0, TerrainType(1))
             .expect("cant add point");
-        d.add_point(ID1, TerrainType::Terrain(1))
+        d.add_point(ID1, TerrainType(1))
             .expect("cant add point");
-        d.add_point(ID2, TerrainType::Terrain(1))
+        d.add_point(ID2, TerrainType(1))
             .expect("cant add point");
         d.connect_points(ID0, ID1, None, Some(false))
             .expect("cant connect points");
         d.connect_points(ID1, ID2, None, Some(false))
             .expect("cant connect points");
         let mut terrain_weights = FnvHashMap::<TerrainType, Weight>::default();
-        terrain_weights.insert(TerrainType::Terrain(1), Weight(2.0));
+        terrain_weights.insert(TerrainType(1), Weight(2.0));
         d.recalculate(
             &[ID2],
             None,
@@ -210,7 +210,7 @@ mod test {
     fn unreacheable_point() {
         let mut dijkstra = setup_id012_connect0to1_1to2();
         dijkstra
-            .add_point(PointId(3), TerrainType::DefaultTerrain)
+            .add_point(PointId(3), TerrainType::DEFAULT)
             .unwrap();
         dijkstra.recalculate(
             &[ID0],

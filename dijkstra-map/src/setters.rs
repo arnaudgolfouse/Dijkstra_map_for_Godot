@@ -273,7 +273,7 @@ mod test {
     const ID0: PointId = PointId(0);
     const ID1: PointId = PointId(1);
     const ID2: PointId = PointId(2);
-    const TERRAIN: TerrainType = TerrainType::DefaultTerrain;
+    const TERRAIN: TerrainType = TerrainType::DEFAULT;
 
     /// Creates a new `DijkstraMap` with 3 non connected points.
     fn setup_add012() -> DijkstraMap {
@@ -340,10 +340,9 @@ mod test {
     fn set_terrain_works() {
         let mut d = setup_add012();
         let terrain = d.get_terrain_for_point(ID0).unwrap();
-        assert_eq!(terrain, TerrainType::DefaultTerrain);
-        d.set_terrain_for_point(ID0, TerrainType::Terrain(5))
-            .unwrap();
+        assert_eq!(terrain, TerrainType::DEFAULT);
+        d.set_terrain_for_point(ID0, TerrainType(5)).unwrap();
         let terrain = d.get_terrain_for_point(ID0).unwrap();
-        assert_eq!(terrain, TerrainType::Terrain(5));
+        assert_eq!(terrain, TerrainType(5));
     }
 }

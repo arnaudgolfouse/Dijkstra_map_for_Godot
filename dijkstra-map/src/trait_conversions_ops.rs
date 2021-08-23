@@ -134,27 +134,32 @@ mod terrain_type {
 
     impl Default for TerrainType {
         fn default() -> Self {
-            TerrainType::DefaultTerrain
+            TerrainType::DEFAULT
         }
     }
 
     impl From<i32> for TerrainType {
-        fn from(x: i32) -> TerrainType {
-            if x == -1 {
-                TerrainType::DefaultTerrain
-            } else {
-                TerrainType::Terrain(x)
-            }
+        fn from(x: i32) -> Self {
+            Self(x)
         }
     }
 
     impl From<TerrainType> for i32 {
         fn from(terrain_type: TerrainType) -> Self {
-            match terrain_type {
-                TerrainType::DefaultTerrain => -1,
-                TerrainType::Terrain(x) => x,
-            }
+            terrain_type.0
         }
+    }
+
+    impl TerrainType {
+        /// The default terrain type, represented by `-1`.
+        ///
+        /// # Example
+        /// ```
+        /// # use dijkstra_map::TerrainType;
+        /// let default_terrain = TerrainType(-1);
+        /// assert_eq!(default_terrain, TerrainType::DEFAULT);
+        /// ```
+        pub const DEFAULT: Self = Self(-1);
     }
 
     #[cfg(test)]
@@ -162,7 +167,7 @@ mod terrain_type {
         use super::*;
         #[test]
         fn terrain_conv_works() {
-            assert_eq!(TerrainType::from(-1), TerrainType::DefaultTerrain);
+            assert_eq!(TerrainType::from(-1), TerrainType::DEFAULT);
         }
     }
 }

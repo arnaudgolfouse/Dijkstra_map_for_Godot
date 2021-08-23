@@ -228,7 +228,7 @@ mod test {
             5,
             5,
             Some((3, 2).into()),
-            TerrainType::DefaultTerrain,
+            TerrainType::DEFAULT,
             None,
             None,
         );
