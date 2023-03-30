@@ -4,6 +4,7 @@ use std::{
 };
 
 use super::*;
+use crate::operation::ApplyOperation;
 
 pub fn remote(origin_map: Rc<RefCell<DijkstraMap>>) -> RemoteMap {
     RemoteMap {
@@ -28,10 +29,12 @@ impl Drop for OperationsGuard {
         for k in self.0.iter() {
             let undo = { &k.undo(&self.1.borrow()) };
             dbg!(undo);
-            self.1
-                .borrow_mut()
-                .apply_operation(undo)
-                .expect("panic while dropping the guard");
+            for undo in undo {
+                self.1
+                    .borrow_mut()
+                    .apply_operation(undo)
+                    .expect("panic while dropping the guard");
+            }
         }
     }
 }
@@ -49,14 +52,14 @@ impl RemoteMap {
         let mut g = vec![];
         for k in &self.operations {
             if self.origin_map.borrow_mut().apply_operation(k).is_err() {
-                return Err(OperationsGuard(g, (&self.origin_map).clone()));
+                return Err(OperationsGuard(g, self.origin_map.clone()));
             } else {
-                g.push(k.clone())
+                g.push(*k)
             }
         }
         Ok(OperationsGuard(
             self.operations.clone(),
-            (&self.origin_map).clone(),
+            self.origin_map.clone(),
         ))
     }
 
