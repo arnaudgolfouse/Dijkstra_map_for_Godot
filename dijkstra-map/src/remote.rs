@@ -32,7 +32,7 @@ impl Drop for OperationsGuard {
             for undo in undo {
                 self.1
                     .borrow_mut()
-                    .apply_operation(undo)
+                    .apply_operation(*undo)
                     .expect("panic while dropping the guard");
             }
         }
@@ -51,7 +51,7 @@ impl RemoteMap {
     pub(crate) fn apply_operations(&mut self) -> Result<OperationsGuard, OperationsGuard> {
         let mut g = vec![];
         for k in &self.operations {
-            if self.origin_map.borrow_mut().apply_operation(k).is_err() {
+            if self.origin_map.borrow_mut().apply_operation(*k).is_err() {
                 return Err(OperationsGuard(g, self.origin_map.clone()));
             } else {
                 g.push(*k)

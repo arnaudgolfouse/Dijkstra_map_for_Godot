@@ -148,7 +148,7 @@ macro_rules! operations {
                 }
             )*
 
-            pub(crate) fn apply_operation(&mut self, operation: &Operation) -> Result<Option<PointInfo>, Errors> {
+            pub(crate) fn apply_operation(&mut self, operation: Operation) -> Result<Option<PointInfo>, Errors> {
                 operation.apply_to_dikjstra_map(self)
             }
         }
@@ -544,9 +544,9 @@ mod tests {
             }),
         ] {
             let undo = op.undo(&dmap);
-            dmap.apply_operation(&op).unwrap();
+            dmap.apply_operation(op).unwrap();
             for undo in &undo {
-                dmap.apply_operation(undo).unwrap();
+                dmap.apply_operation(*undo).unwrap();
             }
             assert_eq!(
                 dmap, cloned,
